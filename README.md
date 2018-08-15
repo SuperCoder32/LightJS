@@ -1,3 +1,5 @@
+# LightJS
+
 This is the LightJS library for HTML5.
 It assumes an available canvas and context object.
 
@@ -56,5 +58,3 @@ lengine.draw();
 //The demo folder contains a small demo, showcasing some example usage of the library.
 
 //The demo is using the canvasJS wrapper library.
-
-# LightJS
