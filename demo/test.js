@@ -5,7 +5,7 @@ var vx = 0, vy = 0;
 
 var player = new Vector(x, y);
 
-var lightEngine = new LightEngine(500, [0,255,0], 'grey', player, function(){}, [255,0,0], 5);
+var lightEngine = new LightEngine(500, [0,255,0], 'grey', player, [255,0,0], 5);
 
 function randPoint() {
     return new Vector( parseInt(Math.random()*canvas.width), parseInt(Math.random()*canvas.height) );

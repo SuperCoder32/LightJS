@@ -123,7 +123,7 @@ function canvasIntersectionPoint(seg) {
 }
 
 class LightEngine {
-    constructor(lr, lc, bg, lv, ls, sc, sw) {
+    constructor(lr, lc, bg, lv, sc, sw) {
         this.segments = [];
         this.shadows = [];
 
@@ -138,7 +138,6 @@ class LightEngine {
         this.bgStyle = bg;
         this.lightRadius = lr;
         this.segmentWidth = sw;
-        this.drawLightSource = ls;
         this.lightSource = lv;
     }
 
@@ -271,8 +270,5 @@ class LightEngine {
         context.fillStyle = this.bgStyle;
         context.strokeStyle = this.bgStyle;
         this.drawShadows();
-
-        //light source
-        this.drawLightSource(this.lightSource);
     }
 }
