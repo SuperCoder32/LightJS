@@ -36,9 +36,14 @@ function keyup(key) {
     }
 }
 
+init({
+    fullScreen: true,
+    clear: false,
+    updateDelay: 10,
+});
+
 let x = canvas.width/2;
 let y = canvas.height/2;
-
 let vx = 0, vy = 0;
 let player = new Vector(x, y);
 
@@ -48,11 +53,6 @@ function randPoint() {
     return new Vector( parseInt(Math.random()*canvas.width), parseInt(Math.random()*canvas.height) );
 }
 
-init({
-    fullScreen: true,
-    clear: false,
-    updateDelay: 10,
-});
 for (let i = 0; i < 8; i++) {
     let randSeg = new Segment( randPoint(), randPoint() );
     lightEngine.segments.push( randSeg );
