@@ -49,15 +49,6 @@ function clockwise(p1, p2, p3) {
     return area_determinant(p1, p2, p3) < 0;
 }
 
-function areColliding(Ax, Ay, Awidth, Aheight, Bx, By, Bwidth, Bheight) {
-	if (Bx <= Ax + Awidth) 
-		if (Ax <= Bx + Bwidth) 
-			if (By <= Ay + Aheight) 
-				if (Ay <= By + Bheight) 
-					return true;
-	return false;
-}
-
 function quadrant(origin, vec) {
 	if (vec.x <= origin.x && vec.y >= origin.y) 
 		return 1;
