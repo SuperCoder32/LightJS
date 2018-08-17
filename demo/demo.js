@@ -1,20 +1,3 @@
-var x = canvas.width/2;
-var y = canvas.height/2;
-
-var vx = 0, vy = 0;
-var player = new Vector(x, y);
-
-var lightEngine = new LightEngine(500, [0,255,0], 'grey', player, [255,0,0], 5);
-
-function randPoint() {
-    return new Vector( parseInt(Math.random()*canvas.width), parseInt(Math.random()*canvas.height) );
-}
-
-for (var i = 0; i < 8; i++) {
-    var randSeg = new Segment( randPoint(), randPoint() );
-    lightEngine.segments.push( randSeg );
-}
-
 function update() {
     player.x += vx;
     player.y += vy;
@@ -51,5 +34,27 @@ function keyup(key) {
         case 'd':
             vx = 0;
     }
+}
+
+let x = canvas.width/2;
+let y = canvas.height/2;
+
+let vx = 0, vy = 0;
+let player = new Vector(x, y);
+
+let lightEngine = new LightEngine(500, [0,255,0], 'grey', player, [255,0,0], 5);
+
+function randPoint() {
+    return new Vector( parseInt(Math.random()*canvas.width), parseInt(Math.random()*canvas.height) );
+}
+
+init({
+    fullScreen: true,
+    clear: false,
+    updateDelay: 10,
+});
+for (let i = 0; i < 8; i++) {
+    let randSeg = new Segment( randPoint(), randPoint() );
+    lightEngine.segments.push( randSeg );
 }
 
