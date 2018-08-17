@@ -2,7 +2,6 @@ var x = canvas.width/2;
 var y = canvas.height/2;
 
 var vx = 0, vy = 0;
-
 var player = new Vector(x, y);
 
 var lightEngine = new LightEngine(500, [0,255,0], 'grey', player, [255,0,0], 5);

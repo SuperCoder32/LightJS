@@ -28,8 +28,8 @@ class Segment {
 		this.end = end;
 	}
     length() {
-        var x1 = this.start.x, y1 = this.start.y;
-        var x2 = this.end.x, y2 = this.end.y;
+        let x1 = this.start.x, y1 = this.start.y;
+        let x2 = this.end.x, y2 = this.end.y;
         return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
     }
 	draw() {
@@ -59,66 +59,56 @@ function areColliding(Ax, Ay, Awidth, Aheight, Bx, By, Bwidth, Bheight) {
 }
 
 function quadrant(origin, vec) {
-	if (vec.x <= origin.x && vec.y >= origin.y) {
+	if (vec.x <= origin.x && vec.y >= origin.y) 
 		return 1;
-	} if (vec.x <= origin.x && vec.y <= origin.y) {
+	if (vec.x <= origin.x && vec.y <= origin.y)
 		return 2;
-	} if (vec.x >= origin.x && vec.y <= origin.y) {
+	if (vec.x >= origin.x && vec.y <= origin.y)
 		return 3;
-	} if (vec.x >= origin.x && vec.y >= origin.y) {
+	if (vec.x >= origin.x && vec.y >= origin.y)
 		return 4;
-	}
 }
 
 function canvasIntersectionPoint(seg) {
-    var k = (seg.end.y - seg.start.y) / (seg.end.x - seg.start.x);
-    var offset = seg.start.y - k * seg.start.x;
+    let k = (seg.end.y - seg.start.y) / (seg.end.x - seg.start.x);
+    let offset = seg.start.y - k * seg.start.x;
 
-    var vec1, vec2, vec3, vec4;
+    let vec1, vec2, vec3, vec4;
     vec1 = new Vector(0, offset);
     vec2 = new Vector(- offset / k, 0);
     vec3 = new Vector(canvas.width, k * canvas.width + offset);
     vec4 = new Vector((canvas.height - offset) / k, canvas.height);
 
-    var quad = quadrant(seg.start, seg.end);
+    let quad = quadrant(seg.start, seg.end);
 
     if (seg.start.x === seg.end.x) {
-        if (seg.end.y < seg.start.y) {
+        if (seg.end.y < seg.start.y)
             return new Vector(seg.start.x, 0);
-        } else {
+        else
             return new Vector(seg.start.x, canvas.height);
-        }
-    } if (seg.start.y === seg.end.y) {
-        if (seg.end.x > seg.start.x) {
+    } 
+    if (seg.start.y === seg.end.y) {
+        if (seg.end.x > seg.start.x)
             return new Vector(canvas.width, seg.start.y);
-        } else {
+        else
             return new Vector(0, seg.start.y);
-        }
     }
-    if (quad === 1) {
-        if (vec1.y < vec4.y) {
-            return vec1;
-        } else {
-            return vec4;
-        }
-    } if (quad === 2) {
-        if (vec2.y > vec1.y) {
-            return vec2;
-        } else {
-            return vec1;
-        }
-    } if (quad === 3) {
-        if (vec3.x < vec2.x) {
-            return vec3;
-        } else {
-            return vec2;
-        }
-    } if (quad === 4) {
-        if (vec4.x < vec3.x) {
-            return vec4;
-        } else {
-            return vec3;
-        }
+
+    switch(quad) {
+        case 1:
+            return vec1.y<vec4.y? vec1: vec4;
+            break;
+        case 2:
+            return vec2.y>vec1.y? vec2: vec1;
+            break;
+        case 3:
+            return vec3.x<vec2.x? vec3: vec2;
+            break;
+        case 4:
+            return vec4.x<vec3.x? vec4: vec3;
+            break;
+        default:
+            throw new Error('Unexpected result for quadrant');
     }	
 }
 
@@ -144,28 +134,28 @@ class LightEngine {
     update() {
         this.shadows = [];
 
-        for (var i=0; i<this.segments.length; i++) {
-            var start = this.segments[i].start, end = this.segments[i].end;
+        for (let segment of this.segments) {
+            let start = segment.start, end = segment.end;
 
-            if (clockwise(this.lightSource, start, end)) {
-                start = this.segments[i].end;
-                end = this.segments[i].start;
+            if (clockwise(this.lightSource, segment.start, segment.end)) {
+                start = segment.end;
+                end = segment.start;
             }
 
-            this.shadows.push([]);
-            var intersection1 = canvasIntersectionPoint( new Segment(this.lightSource, start) );
-            var intersection2 = canvasIntersectionPoint( new Segment(this.lightSource, end) );
+            let shadow = [];
+            let intersection1 = canvasIntersectionPoint( new Segment(this.lightSource, start) );
+            let intersection2 = canvasIntersectionPoint( new Segment(this.lightSource, end) );
 
             if ((intersection1.x === intersection2.x && (intersection1.x === 0 || intersection1.x === canvas.width))
              || (intersection1.y === intersection2.y && (intersection1.y === 0 || intersection1.y === canvas.height))) {
 
-                this.shadows[i].push(intersection1);
-                this.shadows[i].push(start);
-                this.shadows[i].push(end);
-                this.shadows[i].push(intersection2);
+                shadow.push(intersection1);
+                shadow.push(start);
+                shadow.push(end);
+                shadow.push(intersection2);
 
             } else {
-                var additionals = [];
+                let additionals = [];
                 if (intersection1.y === 0 && intersection2.x === canvas.width) {
                     additionals = [new Vector(canvas.width, 0)];
                 } else if (intersection1.x === canvas.width && intersection2.y === canvas.height) {
@@ -204,22 +194,23 @@ class LightEngine {
                     additionals.push(new Vector(canvas.width, 0));
                 }
 
-                this.shadows[i].push(intersection1);
-                for (var j=0; j<additionals.length; j++) {
-                    this.shadows[i].push(additionals[j]);
+                shadow.push(intersection1);
+                for (let add of additionals) {
+                    shadow.push(add);
                 }
-                this.shadows[i].push(intersection2);
-                this.shadows[i].push(end);
-                this.shadows[i].push(start);
+                shadow.push(intersection2);
+                shadow.push(end);
+                shadow.push(start);
             }
+            this.shadows.push(shadow);
         }
     }
 
-    drawPolygon(poly, fill, stroke) {
+    drawPolygon(polygons, fill, stroke) {
         context.beginPath();
-        context.moveTo(poly[0].x, poly[0].y);
-        for (var j=1; j<poly.length; j++) {
-            context.lineTo(poly[j].x, poly[j].y);
+        context.moveTo(polygons[0].x, polygons[0].y);
+        for (let poly of polygons) {
+            context.lineTo(poly.x, poly.y);
         }
         context.closePath();
         if (stroke)
@@ -230,8 +221,8 @@ class LightEngine {
 
     drawShadows() {
         if (this.segments.length >= 1) {
-            for (var i=0; i<this.shadows.length; i++) {
-                this.drawPolygon(this.shadows[i], true, false);
+            for (let shadow of this.shadows) {
+                this.drawPolygon(shadow, true, false);
             }
         }
     }
@@ -242,20 +233,18 @@ class LightEngine {
         context.fillRect(0, 0, canvas.width, canvas.height);
 
         //light
-        var r = this.lred, g = this.lgreen, b = this.lblue;
-        var lx = this.lightSource.x, ly = this.lightSource.y;
-        var lr = this.lightRadius;
+        let r = this.lred, g = this.lgreen, b = this.lblue;
+        let lx = this.lightSource.x, ly = this.lightSource.y;
+        let lr = this.lightRadius;
 
-        var grd = context.createRadialGradient(lx, ly, lr, lx, ly, 0);
+        let grd = context.createRadialGradient(lx, ly, lr, lx, ly, 0);
         grd.addColorStop(0, 'rgba('+r+','+g+','+b+',0)');
         grd.addColorStop(1, 'rgba('+r+','+g+','+b+',1)');
         context.fillStyle = grd;
         context.fillRect(0, 0, canvas.width, canvas.height);
 
         //segments
-        for (var i = 0; i < this.segments.length; i++) {
-            var seg = this.segments[i];
-
+        for (let seg of this.segments) {
             r = this.sred, g = this.sgreen, b = this.sblue;
             grd = context.createRadialGradient(lx, ly, lr, lx, ly, 0);
             grd.addColorStop(0, 'rgba('+r+','+g+','+b+',0)');
